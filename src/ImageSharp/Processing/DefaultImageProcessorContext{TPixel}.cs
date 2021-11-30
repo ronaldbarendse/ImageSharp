@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing.Processors;
+using SixLabors.ImageSharp.Processing.Processors.Transforms;
 
 namespace SixLabors.ImageSharp.Processing
 {
@@ -17,6 +18,7 @@ namespace SixLabors.ImageSharp.Processing
     {
         private readonly bool mutate;
         private readonly Image<TPixel> source;
+        private readonly OrientationMode orientation;
         private Image<TPixel> destination;
 
         /// <summary>
@@ -36,6 +38,13 @@ namespace SixLabors.ImageSharp.Processing
             {
                 this.destination = source;
             }
+
+            if (configuration.AutoOrient)
+            {
+                // Store source orientation and auto-orient image data
+                this.orientation = source.Metadata.GetOrientation();
+                this.ApplyProcessor(new AutoOrientProcessor());
+            }
         }
 
         /// <inheritdoc/>
@@ -47,6 +56,12 @@ namespace SixLabors.ImageSharp.Processing
         /// <inheritdoc/>
         public Image<TPixel> GetResultImage()
         {
+            if (this.Configuration.AutoOrient)
+            {
+                // Re-orient using source orientation
+                this.ApplyProcessor(new ReOrientProcessor(this.orientation));
+            }
+
             if (!this.mutate && this.destination is null)
             {
                 // Ensure we have cloned the source if we are not mutating as we might have failed

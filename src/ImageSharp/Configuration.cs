@@ -112,6 +112,11 @@ namespace SixLabors.ImageSharp
         public ReadOrigin ReadOrigin { get; set; } = ReadOrigin.Current;
 
         /// <summary>
+        /// Gets or sets a value indicating whether the image data is automatically oriented while processing (based on the EXIF orientation metadata).
+        /// </summary>
+        public bool AutoOrient { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets the <see cref="ImageFormatManager"/> that is currently in use.
         /// </summary>
         public ImageFormatManager ImageFormatsManager { get; set; } = new ImageFormatManager();
@@ -168,6 +173,7 @@ namespace SixLabors.ImageSharp
             MemoryAllocator = this.MemoryAllocator,
             ImageOperationsProvider = this.ImageOperationsProvider,
             ReadOrigin = this.ReadOrigin,
+            AutoOrient = this.AutoOrient,
             FileSystem = this.FileSystem,
             WorkingBufferSizeHintInBytes = this.WorkingBufferSizeHintInBytes,
         };
